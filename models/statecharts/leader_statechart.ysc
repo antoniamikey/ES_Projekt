@@ -19,7 +19,7 @@
         <outgoingTransitions xmi:id="_6nHxkCw5EfGskqeVsBPOgw" specification="after 15 s&#xA;" target="_F0QxsCw1EfGskqeVsBPOgw"/>
       </vertices>
       <vertices xsi:type="sgraph:Entry" xmi:id="_QcMHwCw3EfGskqeVsBPOgw">
-        <outgoingTransitions xmi:id="_3c8s4Cw_EfGskqeVsBPOgw" specification="start" target="__7GtXiwxEfGskqeVsBPOgw"/>
+        <outgoingTransitions xmi:id="_3c8s4Cw_EfGskqeVsBPOgw" specification="" target="__7GtXiwxEfGskqeVsBPOgw"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_oy2UICw4EfGskqeVsBPOgw" specification="entry / raise Out.moveToLastFollowerPosition; &#xA;raise Out.broadcastLocation" name="RECOVER_FOLLOWER_POSITION" incomingTransitions="_oy5XcCw4EfGskqeVsBPOgw">
         <outgoingTransitions xmi:id="_zLzaECw6EfGskqeVsBPOgw" specification="followerRecovered" target="__7GtXiwxEfGskqeVsBPOgw"/>
