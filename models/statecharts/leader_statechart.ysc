@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.3/notation" xmlns:sgraph="http://www.yakindu.org/sct/sgraph/2.0.0">
-  <sgraph:Statechart xmi:id="__7GGQCwxEfGskqeVsBPOgw" specification="@EventDriven&#xA;&#xA;interface:&#xA;  in event start&#xA;  in event followerRecovered&#xA;  in event deadEndDetected&#xA;  in event reverseDone&#xA;  var distance: real = 0.5&#xA;&#xA;interface Out:&#xA;  out event halt&#xA;  out event broadcastLocation&#xA;  out event signalReverse&#xA;  out event moveToLastFollowerPosition&#xA;" name="test">
+  <sgraph:Statechart xmi:id="__7GGQCwxEfGskqeVsBPOgw" specification="@EventDriven&#xA;&#xA;interface:&#xA;  in event start&#xA;  in event followerRecovered&#xA;  in event deadEndDetected&#xA;  in event reverseDone&#xA;  var distance: real = 0.5&#xA;&#xA;interface Out:&#xA;  out event halt&#xA;  out event broadcastLocation&#xA;  out event signalReverse&#xA;  out event moveToLastFollowerPosition&#xA;  out event signalReverseDone&#xA;" name="test">
     <regions xmi:id="__7GtWywxEfGskqeVsBPOgw" name="Leader">
       <vertices xsi:type="sgraph:State" xmi:id="__7GtXiwxEfGskqeVsBPOgw" name="EXPLORING" incomingTransitions="__7GtaywxEfGskqeVsBPOgw _iwlXECw1EfGskqeVsBPOgw _vWoUwCw5EfGskqeVsBPOgw _zLzaECw6EfGskqeVsBPOgw _3c8s4Cw_EfGskqeVsBPOgw">
         <outgoingTransitions xmi:id="__7GtYSwxEfGskqeVsBPOgw" specification="[distance > 1.5]" target="__7GtaCwxEfGskqeVsBPOgw"/>
@@ -15,7 +15,7 @@
         <outgoingTransitions xmi:id="_oy5XcCw4EfGskqeVsBPOgw" specification="after 120 s" target="_oy2UICw4EfGskqeVsBPOgw"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_qoWkkCw1EfGskqeVsBPOgw" name="DEAD_END" incomingTransitions="_qoZn4Cw1EfGskqeVsBPOgw">
-        <outgoingTransitions xmi:id="_vWoUwCw5EfGskqeVsBPOgw" specification="reverseDone" target="__7GtXiwxEfGskqeVsBPOgw"/>
+        <outgoingTransitions xmi:id="_vWoUwCw5EfGskqeVsBPOgw" specification="reverseDone /raise Out.signalReverseDone" target="__7GtXiwxEfGskqeVsBPOgw"/>
         <outgoingTransitions xmi:id="_6nHxkCw5EfGskqeVsBPOgw" specification="after 15 s&#xA;" target="_F0QxsCw1EfGskqeVsBPOgw"/>
       </vertices>
       <vertices xsi:type="sgraph:Entry" xmi:id="_QcMHwCw3EfGskqeVsBPOgw">

@@ -53,6 +53,8 @@ answer.*
 ## Stage 2 - State Machine Modelling
 -> The goal of this stage is to create precise, readable statechart models for both robots. Statecharts are the bridge between informal requirements and formal timed automata.
 
+-> statecharts are wip
+
 
 
 
