@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+	<declaration>chan follower_ready;
+chan leader_start;
+broadcast chan dead_end_alert;
+chan follower_backed_up;
+chan follower_recovered;
+chan reversal_done;
+int distance = 1;
+clock hb;
+broadcast chan leader_status;   // Leader → Follower: ich bin noch da
+chan follower_ack;               // Follower → Leader: ich bin noch da</declaration>
+	<template>
+		<name>Leader</name>
+		<declaration>clock t;</declaration>
+		<location id="id0" x="-297" y="-102">
+			<name x="-307" y="-132">INIT</name>
+			<committed/>
+		</location>
+		<location id="id1" x="-32" y="-106">
+			<name x="-42" y="-136">EXPLORING</name>
+		</location>
+		<location id="id2" x="510" y="-204">
+			<name x="442" y="-238">WAITING_FOR_FOLLOWER</name>
+			<label kind="invariant" x="467" y="-187">t &lt;= 60</label>
+		</location>
+		<location id="id3" x="-34" y="323">
+			<name x="-85" y="289">DEAD_END</name>
+			<label kind="invariant" x="-44" y="338">t &lt;= 15</label>
+		</location>
+		<location id="id4" x="212" y="323">
+			<name x="202" y="293">WAITING_FOR_LOST_FOLLOWER</name>
+			<label kind="invariant" x="202" y="338">t &lt;= 120</label>
+		</location>
+		<location id="id5" x="212" y="17">
+			<name x="127" y="34">RECOVER_FOLLOWER_POSITION</name>
+		</location>
+		<location id="id6" x="-229" y="119">
+			<name x="-239" y="85">EXECUTE_REVERSAL_MANOUVRE</name>
+		</location>
+		<init ref="id0"/>
+		<transition id="id7">
+			<source ref="id6"/>
+			<target ref="id6"/>
+			<label kind="guard" x="-450" y="119">hb &gt;= 5</label>
+			<label kind="synchronisation" x="-450" y="136">leader_status!</label>
+			<label kind="assignment" x="-450" y="153">hb=0</label>
+			<nail x="-314" y="187"/>
+			<nail x="-340" y="85"/>
+		</transition>
+		<transition id="id8">
+			<source ref="id3"/>
+			<target ref="id3"/>
+			<label kind="guard" x="17" y="221">hb &gt;= 5</label>
+			<label kind="synchronisation" x="17" y="238">leader_status!</label>
+			<label kind="assignment" x="17" y="255">hb=0</label>
+			<nail x="34" y="306"/>
+			<nail x="8" y="255"/>
+		</transition>
+		<transition id="id9">
+			<source ref="id4"/>
+			<target ref="id4"/>
+			<label kind="guard" x="85" y="340">hb &gt;= 5</label>
+			<label kind="synchronisation" x="85" y="357">leader_status!</label>
+			<label kind="assignment" x="85" y="374">hb=0</label>
+			<nail x="119" y="306"/>
+			<nail x="119" y="348"/>
+		</transition>
+		<transition id="id10">
+			<source ref="id5"/>
+			<target ref="id5"/>
+			<label kind="guard" x="255" y="-25">hb &gt;= 5</label>
+			<label kind="synchronisation" x="255" y="-8">leader_status!</label>
+			<label kind="assignment" x="254" y="9">hb = 0</label>
+			<nail x="255" y="0"/>
+			<nail x="238" y="-34"/>
+		</transition>
+		<transition id="id11">
+			<source ref="id2"/>
+			<target ref="id2"/>
+			<label kind="guard" x="722" y="-212">hb &gt;= 5</label>
+			<label kind="synchronisation" x="722" y="-195">leader_status!</label>
+			<label kind="assignment" x="722" y="-178">hb=0</label>
+			<nail x="714" y="-136"/>
+			<nail x="714" y="-229"/>
+		</transition>
+		<transition id="id12">
+			<source ref="id6"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-211" y="-11">reversal_done!</label>
+		</transition>
+		<transition id="id13">
+			<source ref="id2"/>
+			<target ref="id1"/>
+			<label kind="guard" x="187" y="-263">distance &lt;= 1</label>
+			<label kind="assignment" x="229" y="-280">t=0</label>
+			<nail x="229" y="-238"/>
+			<nail x="93" y="-170"/>
+		</transition>
+		<transition id="id14">
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-229" y="-127">follower_ready?</label>
+			<label kind="assignment" x="-187" y="-102">t = 0</label>
+		</transition>
+		<transition id="id15">
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="guard" x="221" y="-136">distance &gt; 2</label>
+			<label kind="assignment" x="255" y="-110">t = 0</label>
+			<nail x="399" y="-110"/>
+		</transition>
+		<transition id="id16">
+			<source ref="id2"/>
+			<target ref="id4"/>
+			<label kind="guard" x="348" y="51">t &gt;= 60</label>
+			<label kind="assignment" x="357" y="76">t = 0</label>
+		</transition>
+		<transition id="id17">
+			<source ref="id1"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="-68" y="110">dead_end_alert!</label>
+			<label kind="assignment" x="-59" y="127">t = 0</label>
+		</transition>
+		<transition id="id18">
+			<source ref="id3"/>
+			<target ref="id1"/>
+		</transition>
+		<transition id="id19">
+			<source ref="id3"/>
+			<target ref="id6"/>
+			<label kind="guard" x="-187" y="221">t &gt;= 15</label>
+			<label kind="synchronisation" x="-221" y="195">follower_backed_up?</label>
+			<label kind="assignment" x="-170" y="238">t = 0</label>
+			<nail x="-153" y="195"/>
+		</transition>
+		<transition id="id20">
+			<source ref="id4"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="0" y="51">follower_recovered?</label>
+			<label kind="assignment" x="59" y="76">t = 0</label>
+		</transition>
+		<transition id="id21">
+			<source ref="id4"/>
+			<target ref="id5"/>
+			<label kind="guard" x="204" y="157">t &gt;= 120</label>
+			<label kind="assignment" x="204" y="187">t = 0</label>
+		</transition>
+		<transition id="id22">
+			<source ref="id5"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="42" y="-42">follower_recovered?</label>
+			<label kind="assignment" x="102" y="-8">t = 0</label>
+		</transition>
+		<transition id="id23">
+			<source ref="id1"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-85" y="-280">hb &gt;= 5</label>
+			<label kind="synchronisation" x="-110" y="-263">leader_status!</label>
+			<label kind="assignment" x="-76" y="-246">hb=0</label>
+			<nail x="-119" y="-221"/>
+			<nail x="8" y="-221"/>
+		</transition>
+	</template>
+	<template>
+		<name>Follower</name>
+		<declaration>clock t;
+    </declaration>
+		<location id="id24" x="-370" y="-115">
+			<name x="-380" y="-145">INIT</name>
+			<committed/>
+		</location>
+		<location id="id25" x="-170" y="-115">
+			<name x="-180" y="-145">APPROACHING</name>
+			<label kind="invariant" x="-187" y="-102">t &lt;= 60</label>
+		</location>
+		<location id="id26" x="212" y="-119">
+			<name x="202" y="-149">FOLLOWING</name>
+			<label kind="invariant" x="202" y="-102">t &lt;= 5</label>
+		</location>
+		<location id="id27" x="-170" y="85">
+			<name x="-223" y="49">SEARCHING_FOR_LEADER</name>
+			<label kind="invariant" x="-197" y="100">t &lt;= 90</label>
+		</location>
+		<location id="id28" x="-170" y="285">
+			<name x="-238" y="255">RECOVER_FOLLOWER_POSITION</name>
+		</location>
+		<location id="id29" x="569" y="-119">
+			<name x="561" y="-153">LEADING_TEMPORARILY</name>
+		</location>
+		<location id="id30" x="212" y="59">
+			<name x="202" y="25">WAITING_FOR_LEADER</name>
+		</location>
+		<location id="id31" x="-374" y="-255">
+		</location>
+		<init ref="id24"/>
+		<transition id="id32">
+			<source ref="id28"/>
+			<target ref="id28"/>
+			<label kind="guard" x="-152" y="331">hb &gt;= 5</label>
+			<label kind="synchronisation" x="-152" y="348">leader_status?
+follower_ack!</label>
+			<label kind="assignment" x="-152" y="365">hb = 0</label>
+			<nail x="-170" y="365"/>
+			<nail x="-68" y="365"/>
+		</transition>
+		<transition id="id33">
+			<source ref="id25"/>
+			<target ref="id25"/>
+			<label kind="guard" x="-425" y="-51">hb &gt;= 5</label>
+			<label kind="synchronisation" x="-425" y="-34">leader_status?
+follower_ack!</label>
+			<label kind="assignment" x="-425" y="-17">hb = 0</label>
+			<nail x="-357" y="-51"/>
+			<nail x="-297" y="-25"/>
+		</transition>
+		<transition id="id34">
+			<source ref="id27"/>
+			<target ref="id27"/>
+			<label kind="guard" x="-365" y="51">hb &gt;= 5</label>
+			<label kind="synchronisation" x="-365" y="68">leader_status?
+follower_ack!</label>
+			<label kind="assignment" x="-365" y="85">hb = 0</label>
+			<nail x="-306" y="25"/>
+			<nail x="-306" y="119"/>
+		</transition>
+		<transition id="id35">
+			<source ref="id30"/>
+			<target ref="id30"/>
+			<label kind="guard" x="229" y="161">hb &gt;= 5</label>
+			<label kind="synchronisation" x="229" y="178">leader_status?
+follower_ack!</label>
+			<label kind="assignment" x="229" y="195">hb = 0</label>
+			<nail x="340" y="161"/>
+			<nail x="204" y="161"/>
+		</transition>
+		<transition id="id36">
+			<source ref="id29"/>
+			<target ref="id29"/>
+			<label kind="guard" x="671" y="-93">hb &gt;= 5</label>
+			<label kind="synchronisation" x="671" y="-76">leader_status?
+follower_ack!</label>
+			<label kind="assignment" x="671" y="-59">hb = 0</label>
+			<nail x="705" y="0"/>
+			<nail x="789" y="-85"/>
+		</transition>
+		<transition id="id37">
+			<source ref="id31"/>
+			<target ref="id25"/>
+			<label kind="synchronisation" x="-314" y="-221">leader_status?</label>
+		</transition>
+		<transition id="id38">
+			<source ref="id25"/>
+			<target ref="id26"/>
+			<label kind="guard" x="-204" y="-297">distance &lt;= 1</label>
+			<nail x="-170" y="-272"/>
+		</transition>
+		<transition id="id39">
+			<source ref="id30"/>
+			<target ref="id26"/>
+			<label kind="synchronisation" x="161" y="-34">reversal_done?</label>
+			<label kind="assignment" x="212" y="-25">t=0</label>
+		</transition>
+		<transition id="id40">
+			<source ref="id29"/>
+			<target ref="id30"/>
+			<label kind="synchronisation" x="484" y="25">follower_backed_up!</label>
+			<nail x="569" y="59"/>
+		</transition>
+		<transition id="id41">
+			<source ref="id24"/>
+			<target ref="id31"/>
+			<label kind="synchronisation" x="-425" y="-195">follower_ready!</label>
+			<label kind="assignment" x="-365" y="-178">t=0</label>
+		</transition>
+		<transition id="id42">
+			<source ref="id25"/>
+			<target ref="id26"/>
+		</transition>
+		<transition id="id43">
+			<source ref="id25"/>
+			<target ref="id27"/>
+			<label kind="guard" x="-195" y="-42">t &gt;= 60</label>
+			<label kind="assignment" x="-187" y="-17">t = 0</label>
+		</transition>
+		<transition id="id44">
+			<source ref="id26"/>
+			<target ref="id26"/>
+			<label kind="guard" x="195" y="-238">hb &gt;= 5</label>
+			<label kind="synchronisation" x="159" y="-295">leader_status?
+follower_ack!</label>
+			<label kind="assignment" x="193" y="-261">hb = 0</label>
+			<nail x="180" y="-266"/>
+			<nail x="240" y="-266"/>
+		</transition>
+		<transition id="id45">
+			<source ref="id26"/>
+			<target ref="id25"/>
+			<label kind="guard" x="-8" y="-144">distance &gt;= 2</label>
+		</transition>
+		<transition id="id46">
+			<source ref="id26"/>
+			<target ref="id27"/>
+			<label kind="assignment" x="-8" y="-42">t = 0</label>
+		</transition>
+		<transition id="id47">
+			<source ref="id26"/>
+			<target ref="id29"/>
+			<label kind="synchronisation" x="357" y="-159">dead_end_alert?</label>
+			<label kind="assignment" x="357" y="-144">t = 0</label>
+		</transition>
+		<transition id="id48">
+			<source ref="id29"/>
+			<target ref="id26"/>
+		</transition>
+		<transition id="id49">
+			<source ref="id27"/>
+			<target ref="id26"/>
+		</transition>
+		<transition id="id50">
+			<source ref="id27"/>
+			<target ref="id28"/>
+			<label kind="guard" x="-195" y="161">t &gt;= 90</label>
+			<label kind="assignment" x="-187" y="187">t = 0</label>
+		</transition>
+		<transition id="id51">
+			<source ref="id28"/>
+			<target ref="id26"/>
+			<label kind="synchronisation" x="-68" y="102">follower_recovered!</label>
+		</transition>
+	</template>
+	<system>system Leader, Follower;</system>
+	<queries>
+		<query>
+			<formula>A[] not deadlock </formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2026-04-01 17:41:51 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; (Leader.EXPLORING and Follower.FOLLOWING)</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2026-04-01 17:44:25 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>Follower.APPROACHING --&gt; Follower.FOLLOWING</formula>
+			<comment/>
+			<result outcome="failure" type="quality" timestamp="2026-04-01 17:45:35 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>Leader.DEAD_END --&gt; Leader.EXPLORING</formula>
+			<comment/>
+			<result outcome="failure" type="quality" timestamp="2026-04-01 17:44:30 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>Follower.SEARCHING_FOR_LEADER --&gt; Follower.APPROACHING</formula>
+			<comment/>
+			<result outcome="failure" type="quality" timestamp="2026-04-01 17:44:31 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Leader.DEAD_END</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2026-04-01 17:44:34 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Follower.LEADING_TEMPORARILY</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2026-04-01 17:46:31 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>A[] not (Leader.WAITING_FOR_LOST_FOLLOWER and Follower.SEARCHING_FOR_LEADER)</formula>
+			<comment>Q8 - Safety: no mutual timeout (clock bound) - EC4</comment>
+			<result outcome="success" type="quality" timestamp="2026-04-01 17:48:25 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>A[] (Leader.WAITING_FOR_FOLLOWER imply Leader.t &lt;= 60)</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2026-04-01 17:50:45 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>A[] (Follower.SEARCHING_FOR_LEADER imply Follower.t &lt;= 90)</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2026-04-01 17:51:52 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>Leader.EXPLORING --&gt; (Leader.DEAD_END or Leader.WAITING_FOR_FOLLOWER or Leader.WAITING_FOR_LOST_FOLLOWER)</formula>
+			<comment>Q11 - Liveness: progress from EXPLORING</comment>
+			<result outcome="failure" type="quality" timestamp="2026-04-01 17:52:28 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>A&lt;&gt; (Leader.EXPLORING and Follower.FOLLOWING)</formula>
+			<comment/>
+			<result outcome="failure" type="quality" timestamp="2026-04-01 17:44:58 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>mutual exclusion of conflicting states</formula>
+			<comment/>
+		</query>
+		<query>
+			<formula>follower leading =&gt; leader reversing/exploring </formula>
+			<comment/>
+		</query>
+		<query>
+			<formula/>
+			<comment/>
+		</query>
+	</queries>
+</nta>
